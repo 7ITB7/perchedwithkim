@@ -167,7 +167,7 @@ function fillList(){const names=new Set([...Object.keys(SCI),...Object.keys(FEED
 /* ---------- eBird ---------- */
 async function eb(path){
  if(!cfg.key)throw new Error('NOKEY');
- let r;try{r=await fetch('https://api.ebird.org/v2/'+path,{headers:{'X-eBirdApiToken':cfg.key.replace(/[^A-Za-z0-9]/g,'')}})}
+ let r;try{r=await fetch('https://api.ebird.org/v2/'+path,{headers:{'X-eBirdApiToken':cfg.key.replace(/\s/g,'')}})}
  catch(e){throw new Error(/github\.io$/.test(location.hostname)?'Could not reach eBird. Check your connection or turn off any ad/content blocker, then try again.':'Blocked here. Open the app from 7itb7.github.io/wingcast/ and enter the key there.')}
  if(r.status===401||r.status===403)throw new Error('eBird rejected the key. Check it in ⚙');
  if(!r.ok)throw new Error('eBird error '+r.status);return r.json()}
