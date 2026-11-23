@@ -60,6 +60,16 @@ table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:2px
 .chips button{margin:3px;min-height:38px;border:0;background:linear-gradient(135deg,#fff1c9,#ffe1ee);border-radius:999px;padding:0 14px;font:700 13px ui-rounded,"Nunito",system-ui;color:var(--ink);cursor:pointer}
 .x{background:none;border:0;color:var(--rust);font-size:20px;min-width:44px;min-height:44px;cursor:pointer}
 a{color:var(--sky)}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.gal a{display:block;aspect-ratio:1;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#ffe6a7,#ffc6e0)}
+.gal img{width:100%;height:100%;object-fit:cover}
+details.sec{background:#fffaf3;border-radius:14px;padding:10px 12px;margin:8px 0}
+details.sec summary{font:800 15px ui-rounded,"Nunito",system-ui;color:var(--rust);cursor:pointer;min-height:32px;list-style:none}
+details.sec summary::after{content:" ▾";color:var(--ink2)}
+details.sec p{margin:6px 0;font-size:14px}
+.lead{font-size:14px}
+[data-bird]{cursor:pointer}
+.back{background:none;border:0;color:var(--violet);font:800 15px ui-rounded,"Nunito",system-ui;min-height:44px;cursor:pointer;padding:0}
 #printBook{display:none}
 @media print{body *{visibility:hidden}#printBook,#printBook *{visibility:visible}#printBook{display:block;position:absolute;left:0;top:0;width:100%;padding:20px;font-family:Georgia,serif}}
 </style></head><body>
@@ -121,6 +131,9 @@ a{color:var(--sky)}
  <div id="past"></div>
 </section>
 
+<!-- BIRD PROFILE -->
+<section id="t-bird" hidden><div id="bird"></div></section>
+
 <!-- SETUP -->
 <section id="t-setup" hidden>
  <div class="card"><h2>Location</h2>
@@ -164,8 +177,8 @@ const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const needLoc=()=>{if(cfg.lat==null){tab('setup');return true}return false};
 
 /* ---------- tabs ---------- */
-const TABS=['today','rare','yard','feeder','sounds','past','setup'];
-function tab(t){document.querySelectorAll('main>section').forEach(s=>s.hidden=s.id!=='t-'+t);
+const TABS=['today','rare','yard','feeder','sounds','past','setup','bird'];let curTab='today',prevTab='today';
+function tab(t){if(t!==curTab){prevTab=curTab;curTab=t}document.querySelectorAll('main>section').forEach(s=>s.hidden=s.id!=='t-'+t);
  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
  if(t==='yard')renderYard();try{history.replaceState(null,'','#'+t)}catch(e){}window.scrollTo(0,0)}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
@@ -260,9 +273,11 @@ async function loadForecast(){
 
 /* ---------- species row ---------- */
 const ph=(n,c='')=>`<span class="phw ${c}"><img data-ph="${esc(n)}" alt="" loading="lazy"></span>`;
-function spRow(m,extra=''){return `<div class="sp">${ph(m.name)}<div class="nm"><b>${esc(m.name)}</b><small>${extra}</small></div>
+function spRow(m,extra=''){return `<div class="sp" data-bird="${esc(m.name)}" data-sci="${esc(m.sci||'')}">${ph(m.name)}<div class="nm"><b>${esc(m.name)}</b><small>${extra}</small></div>
  <button class="ic" title="Hear it" data-snd="${esc(m.name)}" data-sci="${esc(m.sci||'')}">🔊</button><button class="ic" title="Add to yard" data-add="${esc(m.name)}">＋</button></div>`}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-snd],[data-add]');if(!b)return;
+document.addEventListener('click',e=>{const bd=e.target.closest('[data-bird]');const b=e.target.closest('[data-snd],[data-add]');
+ if(!b&&bd&&!e.target.closest('a,.x,[data-del]')){openBird(bd.dataset.bird,bd.dataset.sci);return}
+ if(!b)return;
  if(b.dataset.snd){tab('sounds');$('#sQ').value=b.dataset.snd;playSounds(b.dataset.snd,b.dataset.sci)}
  else{tab('yard');$('#yName').value=b.dataset.add;$('#yName').scrollIntoView({block:'center'})}});
 
@@ -312,7 +327,7 @@ $('#rareGo').onclick=async()=>{if(needLoc())return;const out=$('#rare');out.inne
    let p=Math.max(5,Math.min(95,Math.round(90*Math.exp(-hrs/40)+Math.min(25,(g.subs.size-1)*8)+(g.valid?5:0))));
    return{...g,dist,hrs,p,mins:Math.round(dist*1.35/65*60)+5}}).sort((a,b)=>(b.p-b.mins/3)-(a.p-a.mins/3));
   learn(rows.map(r=>[r.o.comName,r.o.sciName]));
-  out.innerHTML=rows.length?rows.map(r=>`<div class="card"><div class="sp" style="border:0;padding:0">${ph(r.o.comName)}<div class="nm"><b>${esc(r.o.comName)}</b><small>${esc(r.o.locName)}</small></div><button class="ic" data-snd="${esc(r.o.comName)}" data-sci="${esc(r.o.sciName)}">🔊</button></div>
+  out.innerHTML=rows.length?rows.map(r=>`<div class="card"><div class="sp" style="border:0;padding:0" data-bird="${esc(r.o.comName)}" data-sci="${esc(r.o.sciName)}">${ph(r.o.comName)}<div class="nm"><b>${esc(r.o.comName)}</b><small>${esc(r.o.locName)}</small></div><button class="ic" data-snd="${esc(r.o.comName)}" data-sci="${esc(r.o.sciName)}">🔊</button></div>
    <div class="row" style="margin-top:4px"><span class="tag ${r.p>=60?'':'r'}">${r.p}% still there</span><span class="tag s">~${r.mins} min drive</span><span class="tag g">${r.subs.size} report${r.subs.size>1?'s':''}</span>${r.valid?'<span class="tag">reviewed</span>':''}</div>
    <div class="muted">Last seen ${esc(r.latest)} (${Math.round(r.hrs)} h ago)${r.o.howMany?' · '+r.o.howMany+' bird(s)':''}</div>
    <div class="links"><a href="https://www.google.com/maps/dir/?api=1&destination=${r.o.lat},${r.o.lng}" target="_blank" rel="noopener">Directions ↗</a><a href="https://ebird.org/checklist/${esc(r.o.subId)}" target="_blank" rel="noopener">Latest checklist ↗</a></div></div>`).join('')
@@ -338,7 +353,7 @@ function renderYard(){
  const years=[...new Set(L.map(r=>r.date.slice(0,4)))].sort().slice(-5);
  $('#yFoy').innerHTML=years.length?'<table><tr><th>Bird</th>'+years.map(y=>`<th>${y}</th>`).join('')+'</tr>'+Object.keys(F).sort().map(n=>'<tr><td>'+esc(n)+'</td>'+years.map((y,i)=>{const v=F[n][y],p=i?F[n][years[i-1]]:null;
   return `<td style="color:${v&&p?(v<p?'var(--green)':v>p?'var(--rust)':'inherit'):'inherit'}">${v||'·'}</td>`}).join('')+'</tr>').join('')+'</table>':'<p class="muted">Arrival comparisons appear once you log sightings.</p>';
- $('#yLog').innerHTML=L.slice(0,25).map((r,i)=>`<div class="sp">${ph(r.name)}<div class="nm"><b>${esc(r.name)}</b><small>${esc(r.date)} · ${r.count}${r.note?' · '+esc(r.note):''}</small></div><button class="x" data-del="${i}" aria-label="Delete">×</button></div>`).join('')||'<p class="muted">Nothing yet.</p>';
+ $('#yLog').innerHTML=L.slice(0,25).map((r,i)=>`<div class="sp" data-bird="${esc(r.name)}">${ph(r.name)}<div class="nm"><b>${esc(r.name)}</b><small>${esc(r.date)} · ${r.count}${r.note?' · '+esc(r.note):''}</small></div><button class="x" data-del="${i}" aria-label="Delete">×</button></div>`).join('')||'<p class="muted">Nothing yet.</p>';
  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const L=log();L.splice(+b.dataset.del,1);store.set('wc.yard',L);renderYard()});
  const recentNames=[...new Set(L.map(r=>r.name))].slice(0,12);
  $('#yQuick').innerHTML=recentNames.length?'<label>Quick add (today)</label>'+recentNames.map(n=>`<button data-q="${esc(n)}">${esc(n)}</button>`).join(''):'';
@@ -381,7 +396,7 @@ $('#fdGo').onclick=async()=>{if(needLoc())return;const out=$('#fd');out.innerHTM
   const byFood={};for(const x of missing)for(const f of FEED[x.name])if(season(f))(byFood[f]=byFood[f]||[]).push(x);
   const ranked=Object.entries(byFood).sort((a,b)=>b[1].length-a[1].length);
   out.innerHTML=`<div class="card"><p><b>${around.length}</b> feeder birds are around your area now. <b>${around.length-missing.length}</b> have been in your yard in the last 30 days.</p>`+
-   (ranked.length?'<h3>What to add, best first</h3>'+ranked.slice(0,6).map(([f,xs])=>`<div class="food"><b>${esc(FOOD[f][0])}</b> <span class="muted">(${esc(FOOD[f][1])})</span><br>Could bring in:<div class="row" style="margin-top:6px">${xs.map(x=>`<span style="display:flex;align-items:center;gap:6px;font-size:13px">${ph(x.name)}${esc(x.name)}</span>`).join('')}</div></div>`).join('')
+   (ranked.length?'<h3>What to add, best first</h3>'+ranked.slice(0,6).map(([f,xs])=>`<div class="food"><b>${esc(FOOD[f][0])}</b> <span class="muted">(${esc(FOOD[f][1])})</span><br>Could bring in:<div class="row" style="margin-top:6px">${xs.map(x=>`<span data-bird="${esc(x.name)}" style="display:flex;align-items:center;gap:6px;font-size:13px">${ph(x.name)}${esc(x.name)}</span>`).join('')}</div></div>`).join('')
     :'<p>Your yard already has every common feeder bird that\'s around now. Nice work.</p>')+
    '<p class="muted">Tip: log yard sightings regularly, because this plan only knows what you\'ve logged. Water draws birds that never touch seed.</p></div>';
  }catch(e){out.innerHTML=keyNote(e)}};
@@ -398,7 +413,7 @@ async function playSounds(name,sci){
    return{t,src:mp3?mp3.src:v.url,page:v.descriptionurl,kind}}).filter(r=>r.src);
   const enc=encodeURIComponent,aab=name.replace(/[' ]/g,m=>m===' '?'_':'');
   const more=`<div class="links"><a href="https://www.allaboutbirds.org/guide/${enc(aab)}/sounds" target="_blank" rel="noopener">All About Birds: typical songs ↗</a><a href="https://xeno-canto.org/explore?query=${enc(sci||name)}" target="_blank" rel="noopener">xeno-canto ↗</a><a href="https://search.macaulaylibrary.org/catalog?q=${enc(name)}&mediaType=audio" target="_blank" rel="noopener">Macaulay Library ↗</a></div>`;
-  out.innerHTML=`<div class="card">${ph(name,'lg')}<h2>${esc(name)}</h2>${sci?`<div class="muted"><i>${esc(sci)}</i></div>`:''}`+
+  out.innerHTML=`<div class="card">${ph(name,'lg')}<h2>${esc(name)}</h2>${sci?`<div class="muted"><i>${esc(sci)}</i></div>`:''}<div class="row"><button class="btn sm" data-bird="${esc(name)}" data-sci="${esc(sci)}">📖 Nest, mating &amp; life info</button></div>`+
    (recs.length?recs.map(r=>`<div class="rec">${r.kind?`<span class="tag ${r.kind==='song'?'':'s'}">${r.kind}</span>`:''}<span class="muted">${esc(r.t)}</span><audio controls preload="none" src="${esc(r.src)}"></audio></div>`).join('')
     :'<p class="muted">No free recordings found under that name. Try the links below.</p>')+
    '<h3>More recordings &amp; how to tell songs from calls</h3>'+more+'</div>';
@@ -440,6 +455,43 @@ $('#pGo').onclick=async()=>{if(needLoc())return;const out=$('#past');out.innerHT
    <h3>Newcomers since then</h3>${newc.length?newc.map(([k,B])=>row(k,`0 old records · now ${B.c.toLocaleString()} records`)).join(''):'<p class="muted">None stood out.</p>'}
    <p class="muted">Caution: old records are mostly museum specimens and egg collections. Collectors' favorites are over-counted, some specimens have the wrong location, and scientists have renamed many birds since then. Treat this as a conversation starter, not a census.</p></div>`;
  }catch(e){out.innerHTML='<div class="card">Historical lookup failed. Try again in a moment.</div>'}};
+
+/* ---------- BIRD PROFILE ---------- */
+const CATS=[['🪶 Looks',/descri|plumage|appearance|identif|morpholog/i],['🐣 Nesting, eggs & babies',/breed|nest|reproduc|egg|young|chick|incubat|fledg/i],['💕 Courtship & mating',/court|mating|pair|display|mate/i],
+ ['🍽️ What it eats',/diet|feed|food|forag/i],['🎶 Voice',/voice|vocal|song|call/i],['🧭 Behavior',/behav|ecology|social|flock/i],['🗺️ Where it lives & travels',/distribution|habitat|range|migrat/i],['⏳ Lifespan, dangers & status',/lifespan|longevity|survival|mortal|predat|threat|conservation|status|parasit|disease/i]];
+async function nestPics(q){
+ try{const d=await J('https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrlimit=9&prop=imageinfo&iiprop=url&iiurlwidth=320&gsrsearch='+encodeURIComponent(q));
+  return Object.values(d.query?.pages||{}).sort((a,b)=>a.index-b.index).map(p=>p.imageinfo?.[0]).filter(i=>i&&i.thumburl&&!/\.(svg|pdf|tif)/i.test(i.url))}catch(e){return[]}}
+async function openBird(name,sci){
+ sci=sci||SCI[name]||'';tab('bird');const out=$('#bird');
+ out.innerHTML=`<button class="back" id="bBack">← Back</button><div class="card">${ph(name,'lg')}<h2>${esc(name)}</h2>${sci?`<div class="muted"><i>${esc(sci)}</i></div>`:''}<p><span class="spin"></span>Loading life story…</p></div>`;
+ $('#bBack').onclick=()=>tab(prevTab==='bird'?'today':prevTab);
+ const wikiP=J('https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=extracts&explaintext=1&exsectionformat=wiki&titles='+encodeURIComponent(name)).catch(()=>null);
+ const terms=[sci,name].filter(Boolean);
+ const qs=terms.flatMap(t=>[`"${t}" intitle:nest filetype:bitmap`,`"${t}" intitle:eggs filetype:bitmap`,`"${t}" intitle:nestling filetype:bitmap`]);
+ const [w,...sets]=await Promise.all([wikiP,...qs.map(nestPics)]);
+ const seen=new Set();let pics=sets.flat().filter(i=>{const k=i.url;if(seen.has(k)||/book|plate|history|illustrat|drawing|map/i.test(decodeURIComponent(k)))return false;seen.add(k);return true});
+ if(pics.length<3)pics=pics.concat(await nestPics(`"${sci||name}" (nest OR eggs) filetype:bitmap`)).filter((i,n,a)=>a.findIndex(x=>x.url===i.url)===n);
+ const page=w?Object.values(w.query?.pages||{})[0]:null;let txt=page?.extract||'';
+ if(!txt&&sci){try{const w2=await J('https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=extracts&explaintext=1&exsectionformat=wiki&titles='+encodeURIComponent(sci));txt=Object.values(w2.query?.pages||{})[0]?.extract||''}catch(e){}}
+ const parts=txt.split(/\n(={2,4}) *(.+?) *\1\n/);const lead=parts[0]||'';const secs=[];
+ for(let i=1;i+2<parts.length+1;i+=3)secs.push({title:parts[i+1]||'',body:(parts[i+2]||'').trim()});
+ const bucket={};
+ for(const sec of secs){if(!sec.body||/references|external links|see also|notes|further reading|bibliography|gallery|taxonomy|etymology|systematics/i.test(sec.title))continue;
+  const c=CATS.find(([,re])=>re.test(sec.title));if(!c)continue;(bucket[c[0]]=bucket[c[0]]||[]).push(sec.body)}
+ const paras=t=>t.split(/\n+/).filter(x=>x.trim().length>40).map(x=>`<p>${esc(x)}</p>`).join('');
+ const clip=(t,n)=>{const ps=t.split(/\n+/).filter(x=>x.trim().length>40);let o=[],len=0;for(const p of ps){if(len>n&&o.length)break;o.push(p);len+=p.length}return o.join('\n')};
+ const leadTxt=clip(lead,700);
+ const aab=name.replace(/[' ]/g,m=>m===' '?'_':'');
+ out.innerHTML=`<button class="back" id="bBack">← Back</button><div class="card">${ph(name,'lg')}<h2>${esc(name)}</h2>${sci?`<div class="muted"><i>${esc(sci)}</i></div>`:''}
+  <div class="row"><button class="btn sm" data-snd="${esc(name)}" data-sci="${esc(sci)}">🔊 Hear it</button><button class="btn sm alt" data-add="${esc(name)}">＋ Add to yard</button></div>
+  ${leadTxt?`<div class="lead">${paras(leadTxt)}</div>`:'<p class="muted">No Wikipedia article found under this name.</p>'}</div>
+  <div class="card"><h2>🪺 Nests &amp; eggs</h2>${pics.length?`<div class="gal">${pics.slice(0,9).map(i=>`<a href="${esc(i.descriptionurl||i.url)}" target="_blank" rel="noopener"><img src="${esc(i.thumburl)}" alt="" loading="lazy"></a>`).join('')}</div><p class="muted">Community photos from Wikimedia Commons. Tap one for details. A few may show a related species.</p>`:'<p class="muted">No nest photos found. Try the links below.</p>'}</div>
+  <div class="card"><h2>📖 Life story</h2>${CATS.map(([t])=>bucket[t]?`<details class="sec"${/Nesting|Courtship/.test(t)?' open':''}><summary>${t}</summary>${paras(clip(bucket[t].join('\n'),1400))}</details>`:'').join('')||'<p class="muted">No detailed sections found.</p>'}
+  <div class="links"><a href="https://www.allaboutbirds.org/guide/${encodeURIComponent(aab)}/lifehistory" target="_blank" rel="noopener">All About Birds: life history ↗</a>${page?.title?`<a href="https://en.wikipedia.org/wiki/${encodeURIComponent(page.title)}" target="_blank" rel="noopener">Full Wikipedia article ↗</a>`:''}</div>
+  <p class="muted">Text from Wikipedia (CC BY-SA).</p></div>`;
+ $('#bBack').onclick=()=>tab(prevTab==='bird'?'today':prevTab);
+}
 
 /* ---------- SETUP ---------- */
 function setPlace(lat,lng,name){cfg.lat=+(+lat).toFixed(4);cfg.lng=+(+lng).toFixed(4);cfg.place=name;cfg.region=null;saveCfg();$('#placeLbl').textContent=name;loadForecast();tab('today')}
