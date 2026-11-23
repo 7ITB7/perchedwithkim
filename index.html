@@ -176,9 +176,13 @@ const keyNote=e=>e.message==='NOKEY'?`<div class="card">This part needs a free e
 async function regionCode(){
  const at=cfg.lat.toFixed(2)+','+cfg.lng.toFixed(2);
  if(cfg.region&&cfg.regionAt===at)return cfg.region;
- const d=await eb(`data/obs/geo/recent?lat=${cfg.lat}&lng=${cfg.lng}&dist=15&back=30&maxResults=50&detail=full`);
+ let d=await eb(`ref/hotspot/geo?lat=${cfg.lat}&lng=${cfg.lng}&dist=25&fmt=json`);
+ if(!d.length)d=await eb(`ref/hotspot/geo?lat=${cfg.lat}&lng=${cfg.lng}&dist=50&fmt=json`);
+ d.sort((a,b)=>km(cfg.lat,cfg.lng,a.lat,a.lng)-km(cfg.lat,cfg.lng,b.lat,b.lng));
  const o=d.find(x=>x.subnational2Code)||d.find(x=>x.subnational1Code);
- if(!o)throw new Error('No eBird reports near this location');
+ if(!o)throw new Error('No eBird hotspots near this location');
+ let nm='';try{nm=(await eb('ref/region/info/'+(o.subnational2Code||o.subnational1Code))).result||''}catch(e){}
+ o.subnational2Name=nm;
  cfg.region=o.subnational2Code||o.subnational1Code;cfg.regionName=o.subnational2Name||o.subnational1Name||cfg.region;cfg.regionAt=at;saveCfg();return cfg.region}
 
 async function historicDay(region,d){
