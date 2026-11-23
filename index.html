@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,"><title>Wingcast</title>
+<style>
+/* WINGCAST: "field guide plate" style. Cream page, forest-green ink, rust accent, serif plate headings, ruled margins */
+:root{--bg:#f3efe4;--card:#fffdf7;--ink:#24362c;--ink2:#61705f;--line:#d6ccb4;--green:#3d6b4f;--rust:#b5562c;--sky:#3b6e8f;--gold:#c99a2e}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,sans-serif;padding-bottom:78px}
+header{background:var(--ink);color:#f3efe4;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--rust)}
+header h1{margin:0;font:700 22px Georgia,serif;letter-spacing:.03em}
+header small{display:block;font-size:12px;opacity:.75}
+header button{background:none;border:1px solid #6d8676;color:#f3efe4;border-radius:6px;min-height:44px;min-width:44px;font-size:20px;cursor:pointer}
+main{max-width:760px;margin:0 auto;padding:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;margin:10px 0}
+h2{font:700 18px Georgia,serif;margin:0 0 6px}
+h3{font:700 15px Georgia,serif;margin:14px 0 6px}
+label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin:10px 0 4px}
+input,select{width:100%;min-height:44px;padding:10px;border:1px solid var(--line);border-radius:6px;background:#fff;font:inherit;color:inherit}
+.btn{min-height:44px;border:0;border-radius:6px;padding:0 16px;background:var(--green);color:#fff;font:600 15px system-ui;cursor:pointer}
+.btn.alt{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{min-height:36px;padding:0 10px;font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.muted{color:var(--ink2);font-size:13px}
+.meter{height:14px;background:#e8e1cf;border-radius:7px;overflow:hidden;margin:6px 0}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--sky),var(--green),var(--gold),var(--rust))}
+.big{font:700 26px Georgia,serif}
+.alert{background:#fbe9e1;border:2px solid var(--rust);border-radius:8px;padding:12px;margin:10px 0}
+.alert b{color:var(--rust)}
+.sp{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}
+.sp:last-child{border-bottom:0}
+.sp .nm{flex:1;min-width:0}
+.sp .nm small{display:block;color:var(--ink2);font-size:12px}
+.pct{font:700 13px ui-monospace,monospace;color:var(--green);min-width:42px;text-align:right}
+.tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:10px;font-weight:700;margin:2px 4px 0 0;background:#e5eee7;color:var(--green)}
+.tag.r{background:#f7e2d8;color:var(--rust)}.tag.s{background:#dfeaf1;color:var(--sky)}.tag.g{background:#f6edd3;color:#8a6510}
+.ic{min-width:44px;min-height:44px;border:1px solid var(--line);background:#fff;border-radius:6px;font-size:18px;cursor:pointer}
+.food{border-left:5px solid var(--gold);background:#fff;border-radius:6px;padding:10px;margin:8px 0}
+.rec{background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px;margin:8px 0}
+.rec audio{width:100%;margin-top:6px}
+.links a{display:inline-block;margin:4px 12px 4px 0;padding:6px 0;color:var(--sky)}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--ink);border-top:3px solid var(--rust)}
+nav button{flex:1;min-height:60px;background:none;border:0;color:#c9d3c8;font:600 11px system-ui;cursor:pointer;padding:4px 0}
+nav button span{display:block;font-size:19px;line-height:1.2}
+nav button.on{color:#fff;box-shadow:inset 0 3px 0 var(--gold)}
+.banner{background:#fff3cd;color:#6b4e00;padding:8px 12px;font-size:13px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--green);border-radius:50%;animation:s 1s linear infinite;vertical-align:-2px;margin-right:6px}@keyframes s{to{transform:rotate(360deg)}}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}
+.chips button{margin:3px;min-height:36px;border:1px solid var(--line);background:#fff;border-radius:18px;padding:0 12px;font:13px system-ui;cursor:pointer}
+.x{background:none;border:0;color:var(--rust);font-size:18px;min-width:44px;min-height:44px;cursor:pointer}
+#printBook{display:none}
+@media print{body *{visibility:hidden}#printBook,#printBook *{visibility:visible}#printBook{display:block;position:absolute;left:0;top:0;width:100%;padding:20px;font-family:Georgia,serif}}
+</style></head><body>
+<div class="banner" id="banner" hidden>Preview mode: live lookups may be blocked here. Everything works once it's on GitHub Pages.</div>
+<header><div><h1>Wingcast</h1><small id="placeLbl">Set your location in ⚙</small></div><button id="gear" aria-label="Setup">⚙</button></header>
+<main>
+
+<!-- TODAY -->
+<section id="t-today">
+ <div id="fallout"></div>
+ <div class="card"><h2>Migration forecast</h2><div id="fc"><p class="muted">Set your location in ⚙ to get the forecast.</p></div></div>
+ <div class="card"><h2>Who to expect now</h2><p class="muted">Birds normally reported in your county this week (last 3 years), plus what's been seen nearby in the past 7 days. Needs a free eBird key.</p>
+  <div class="row"><button class="btn" id="expGo">Load expected birds</button></div><div id="exp"></div></div>
+</section>
+
+<!-- RARE -->
+<section id="t-rare" hidden>
+ <div class="card"><h2>Rarity run</h2><p class="muted">Rare birds reported near you in the last 7 days. Sorted so the best bets come first: close, recent, and reported by several people.</p>
+  <div class="row"><button class="btn" id="rareGo">Find rarities</button></div></div>
+ <div id="rare"></div>
+</section>
+
+<!-- YARD -->
+<section id="t-yard" hidden>
+ <div class="card"><h2>Yard ledger</h2>
+  <label for="yName">Bird</label><input id="yName" list="birdList" placeholder="Start typing… e.g. Eastern Bluebird">
+  <div class="grid"><div><label for="yDate">Date</label><input id="yDate" type="date"></div><div><label for="yCount">How many</label><input id="yCount" inputmode="numeric" value="1"></div></div>
+  <label for="yNote">Note (optional)</label><input id="yNote" placeholder="at the suet, singing, pair…">
+  <div class="row"><button class="btn" id="yAdd">Add sighting</button></div>
+  <div class="chips" id="yQuick"></div>
+ </div>
+ <div class="card"><h2 id="yrTitle">This year</h2><div id="yStats"></div><div id="ySum"></div></div>
+ <div class="card"><h2>Arrival dates by year</h2><p class="muted">First date each bird showed up in the yard each year. A green number means earlier than the year before.</p><div id="yFoy"></div></div>
+ <div class="card"><h2>Recent entries</h2><div id="yLog"></div>
+  <div class="row"><button class="btn alt" id="yPrint">Print year book</button><button class="btn alt" id="yCsv">Export CSV</button><button class="btn alt" id="yBak">Backup</button><button class="btn alt" id="yRes">Restore</button><input type="file" id="yFile" accept=".json" hidden></div></div>
+</section>
+
+<!-- FEEDER -->
+<section id="t-feeder" hidden>
+ <div class="card"><h2>Feeder planner</h2><p class="muted">Compares the birds around you right now with what's been in the yard over the last 30 days. Then it tells you which food or feeder would bring in the missing ones.</p>
+  <div class="row"><button class="btn" id="fdGo">Plan my feeders</button></div></div>
+ <div id="fd"></div>
+</section>
+
+<!-- SOUNDS -->
+<section id="t-sounds" hidden>
+ <div class="card"><h2>Bird sounds</h2>
+  <label for="sQ">Bird name</label><input id="sQ" list="birdList" placeholder="e.g. Wood Thrush">
+  <div class="row"><button class="btn" id="sGo">Play sounds</button></div>
+  <div class="chips" id="sQuick"></div></div>
+ <div id="snd"></div>
+</section>
+
+<!-- PAST -->
+<section id="t-past" hidden>
+ <div class="card"><h2>Then &amp; Now</h2><p class="muted">Bird records from around your area in 1870–1939 (mostly museum specimens and old collections), compared with 2015 to today. Shows birds common back then that are rare now, and newcomers your great-grandparents never saw.</p>
+  <label for="pR">Search radius (km)</label><input id="pR" inputmode="numeric" value="60">
+  <div class="row"><button class="btn" id="pGo">Compare eras</button></div></div>
+ <div id="past"></div>
+</section>
+
+<!-- SETUP -->
+<section id="t-setup" hidden>
+ <div class="card"><h2>Location</h2>
+  <div class="row"><button class="btn" id="geo">Use my location</button></div>
+  <label for="town">…or search a town</label><input id="town" placeholder="Coventry, CT">
+  <div class="row"><button class="btn alt" id="townGo">Search</button></div><div id="townRes"></div>
+  <label for="rad">Area for nearby birds (km)</label><input id="rad" inputmode="numeric" value="25">
+ </div>
+ <div class="card"><h2>eBird key (free)</h2>
+  <p class="muted">Needed for "Who to expect", Rarity run and Feeder planner. The forecast, Sounds, Yard ledger and Then &amp; Now work without it.<br>To get one: sign in (or make a free account) at ebird.org, then open <a href="https://ebird.org/api/keygen" target="_blank" rel="noopener">ebird.org/api/keygen ↗</a>. Agree to the terms, and copy the short key it shows into the box below.</p>
+  <label for="key">eBird API key</label><input id="key" autocomplete="off" placeholder="e.g. a1b2c3d4e5f6">
+  <div class="row"><button class="btn" id="keySave">Save &amp; test</button></div><div id="keyMsg" class="muted"></div>
+ </div>
+ <div class="card muted">Data: eBird (Cornell Lab), Open-Meteo weather, GBIF historical records, and Wikimedia Commons recordings (many from xeno-canto). The migration forecast is a weather-based estimate: helpful, not gospel. Everything you log stays on this phone. Use Backup to keep a copy.</div>
+</section>
+</main>
+<datalist id="birdList"></datalist>
+<div id="printBook"></div>
+
+<nav>
+ <button data-t="today" class="on"><span>🌅</span>Today</button>
+ <button data-t="rare"><span>⭐</span>Rare</button>
+ <button data-t="yard"><span>🏡</span>Yard</button>
+ <button data-t="feeder"><span>🌻</span>Feeder</button>
+ <button data-t="sounds"><span>🎵</span>Sounds</button>
+ <button data-t="past"><span>📜</span>Past</button>
+</nav>
+
+<script>
+/* ---------- basics ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+try{if(!/github\.io$/.test(location.hostname))$('#banner').hidden=false}catch(e){}
+const cfg=store.get('wc.cfg',{key:'',lat:null,lng:null,place:'',radius:25});
+const saveCfg=()=>store.set('wc.cfg',cfg);
+async function J(url,opt){const r=await fetch(url,opt);if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
+const spin=t=>`<div class="card"><span class="spin"></span>${esc(t)}</div>`;
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const needLoc=()=>{if(cfg.lat==null){tab('setup');return true}return false};
+
+/* ---------- tabs ---------- */
+const TABS=['today','rare','yard','feeder','sounds','past','setup'];
+function tab(t){document.querySelectorAll('main>section').forEach(s=>s.hidden=s.id!=='t-'+t);
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+ if(t==='yard')renderYard();try{history.replaceState(null,'','#'+t)}catch(e){}window.scrollTo(0,0)}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+$('#gear').onclick=()=>tab('setup');
+
+/* ---------- species names (datalist + sci lookup) ---------- */
+const SCI=store.get('wc.sci',{});      // common name -> scientific name
+function learn(list){let ch=false;for(const[c,s]of list)if(c&&s&&!SCI[c]){SCI[c]=s;ch=true}if(ch){store.set('wc.sci',SCI);fillList()}}
+function fillList(){const names=new Set([...Object.keys(SCI),...Object.keys(FEED)]);$('#birdList').innerHTML=[...names].sort().map(n=>`<option value="${esc(n)}">`).join('')}
+
+/* ---------- eBird ---------- */
+async function eb(path){
+ if(!cfg.key)throw new Error('NOKEY');
+ let r;try{r=await fetch('https://api.ebird.org/v2/'+path,{headers:{'X-eBirdApiToken':cfg.key.replace(/[^A-Za-z0-9]/g,'')}})}
+ catch(e){throw new Error(/github\.io$/.test(location.hostname)?'Could not reach eBird. Check your connection or turn off any ad/content blocker, then try again.':'Blocked here. Open the app from 7itb7.github.io/wingcast/ and enter the key there.')}
+ if(r.status===401||r.status===403)throw new Error('eBird rejected the key. Check it in ⚙');
+ if(!r.ok)throw new Error('eBird error '+r.status);return r.json()}
+const keyNote=e=>e.message==='NOKEY'?`<div class="card">This part needs a free eBird key. <button class="btn sm" onclick="tab('setup')">Add key</button></div>`:`<div class="card">Couldn't load: ${esc(e.message)}</div>`;
+
+async function regionCode(){
+ const at=cfg.lat.toFixed(2)+','+cfg.lng.toFixed(2);
+ if(cfg.region&&cfg.regionAt===at)return cfg.region;
+ const d=await eb(`data/obs/geo/recent?lat=${cfg.lat}&lng=${cfg.lng}&dist=15&back=30&maxResults=50&detail=full`);
+ const o=d.find(x=>x.subnational2Code)||d.find(x=>x.subnational1Code);
+ if(!o)throw new Error('No eBird reports near this location');
+ cfg.region=o.subnational2Code||o.subnational1Code;cfg.regionName=o.subnational2Name||o.subnational1Name||cfg.region;cfg.regionAt=at;saveCfg();return cfg.region}
+
+async function historicDay(region,d){
+ const k='wc.h.'+region+'.'+ymd(d);const c=store.get(k,null);if(c)return c;
+ const raw=await eb(`data/obs/${region}/historic/${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}?rank=mrec&detail=simple&cat=species`);
+ const out=raw.map(o=>[o.speciesCode,o.comName,o.sciName]);
+ if(!store.set(k,out)){try{Object.keys(localStorage).filter(x=>x.startsWith('wc.h.')).forEach(x=>localStorage.removeItem(x))}catch(e){}store.set(k,out)}
+ return out}
+async function pool(items,n,fn){const res=[];let i=0;await Promise.all(Array.from({length:n},async()=>{while(i<items.length){const j=i++;try{res[j]=await fn(items[j])}catch(e){res[j]=null}}}));return res}
+
+/* expected birds: freq now (±2 days), two weeks ago, and next two weeks, over last 3 years */
+async function expected(prog=()=>{}){
+ const region=await regionCode();const now=new Date();const Y=now.getFullYear();
+ const jobs=[];
+ for(let y=1;y<=3;y++)for(const[off,w]of[[-14,'past'],[-2,'now'],[0,'now'],[2,'now'],[7,'next'],[14,'next']]){const d=new Date(Y-y,now.getMonth(),now.getDate()+off);jobs.push({d,w})}
+ let done=0;
+ const res=await pool(jobs,4,async j=>{const r=await historicDay(region,j.d);prog(`Reading past years… ${++done}/${jobs.length}`);return r});
+ const tot={past:0,now:0,next:0};const M={};
+ jobs.forEach((j,i)=>{if(!res[i])return;tot[j.w]++;for(const[code,name,sci]of res[i]){const m=M[code]||(M[code]={code,name,sci,past:0,now:0,next:0,recent:null});m[j.w]++}});
+ prog('Checking the last 7 days nearby…');
+ let recent=[];try{recent=await eb(`data/obs/geo/recent?lat=${cfg.lat}&lng=${cfg.lng}&dist=${cfg.radius||25}&back=7&cat=species`)}catch(e){}
+ for(const o of recent){const m=M[o.speciesCode]||(M[o.speciesCode]={code:o.speciesCode,name:o.comName,sci:o.sciName,past:0,now:0,next:0});m.recent=o}
+ const list=Object.values(M).map(m=>({...m,fNow:tot.now?m.now/tot.now:0,fPast:tot.past?m.past/tot.past:0,fNext:tot.next?m.next/tot.next:0}));
+ learn(list.map(m=>[m.name,m.sci]));
+ return{list,region:cfg.regionName||region}}
+
+/* ---------- weather → migration ---------- */
+function doy(d){return Math.floor((d-new Date(d.getFullYear(),0,0))/864e5)}
+function seasonInfo(d){const t=doy(d);
+ const sp=Math.exp(-Math.pow((t-132)/24,2)),fa=Math.exp(-Math.pow((t-271)/32,2));
+ return sp>=fa?{f:sp,name:'spring',ideal:210,want:'south or southwest winds'}:{f:fa,name:'fall',ideal:330,want:'north or northwest winds'}}
+function night(h,day){ // 8pm on `day` to 7am next day
+ const a=ymd(day)+'T20:00',nx=new Date(day);nx.setDate(nx.getDate()+1);const b=ymd(nx)+'T07:00';
+ const idx=h.time.map((t,i)=>t>=a&&t<=b?i:-1).filter(i=>i>=0);if(!idx.length)return null;
+ const S=seasonInfo(day);let tail=0,early=0,late=0,vis=99999,temp=0;
+ for(const i of idx){const diff=(h.wind_direction_10m[i]-S.ideal)*Math.PI/180;tail+=h.wind_speed_10m[i]*Math.cos(diff);temp+=h.temperature_2m[i];
+  const hr=+h.time[i].slice(11,13);if(hr>=20||hr<1)early+=h.precipitation[i];else late+=h.precipitation[i];if(h.visibility&&h.visibility[i]!=null)vis=Math.min(vis,h.visibility[i])}
+ tail/=idx.length;temp/=idx.length;
+ const wet=early>2?0.35:early>0.6?0.7:1;
+ let score=100*S.f*Math.max(0,Math.min(1.3,0.45+tail/18))*wet;score=Math.round(Math.max(0,Math.min(100,score)));
+ const fallout=S.f>0.3&&early<0.4&&tail>2&&(late>=0.8||(S.name==='spring'&&vis<1500));
+ const dirs=['N','NE','E','SE','S','SW','W','NW'];const mid=idx[Math.floor(idx.length/2)];
+ return{score,tail,early,late,vis,temp,S,fallout,wind:`${dirs[Math.round(h.wind_direction_10m[mid]/45)%8]} ${Math.round(h.wind_speed_10m[mid])} mph`}}
+const word=s=>s<12?'Quiet':s<30?'Light':s<55?'Moderate':s<80?'Big flight':'Huge flight';
+async function loadForecast(){
+ if(cfg.lat==null)return;
+ $('#fc').innerHTML='<span class="spin"></span>Reading the weather…';
+ try{
+  const w=await J(`https://api.open-meteo.com/v1/forecast?latitude=${cfg.lat}&longitude=${cfg.lng}&hourly=temperature_2m,precipitation,wind_speed_10m,wind_direction_10m,visibility&past_days=1&forecast_days=2&timezone=auto&wind_speed_unit=mph&temperature_unit=fahrenheit`);
+  const today=new Date(),yest=new Date();yest.setDate(yest.getDate()-1);
+  const L=night(w.hourly,yest),T=night(w.hourly,today);
+  const box=(n,title)=>!n?'':`<h3>${title}</h3><div class="big">${word(n.score)} <span class="muted">${n.score}/100</span></div><div class="meter"><i style="width:${n.score}%"></i></div>
+   <div class="muted">Wind ${esc(n.wind)} · ${n.tail>2?'tailwind for migrants':n.tail<-2?'headwind, so birds hold back':'little help from the wind'} · rain ${(n.early+n.late).toFixed(1)} mm · ${Math.round(n.temp)}°F</div>`;
+  const S=seasonInfo(today);
+  let note=S.f<0.12?`It's outside the main migration seasons, so expect mostly resident and winter birds. Migration picks up mid-March and again in August.`
+   :`It's ${S.name} migration. The big nights come with ${S.want} and no rain.`;
+  $('#fc').innerHTML=box(L,'Last night → this morning')+box(T,'Tonight → tomorrow morning')+`<p class="muted">${note}</p>`;
+  let fa='';
+  if(L&&L.fallout)fa+=`<div class="alert"><b>FALLOUT LIKELY THIS MORNING.</b> Birds took off in good conditions last night, then rain or fog came in after midnight and forced them down. Check sheltered woods, edges, and the yard early.</div>`;
+  if(T&&T.fallout)fa+=`<div class="alert"><b>FALLOUT WATCH FOR TOMORROW.</b> Good flying weather this evening with rain or fog arriving after midnight. Be out early tomorrow.</div>`;
+  $('#fallout').innerHTML=fa;
+ }catch(e){$('#fc').innerHTML='Weather lookup failed. Try again later.'}}
+
+/* ---------- species row ---------- */
+function spRow(m,extra=''){return `<div class="sp"><div class="nm"><b>${esc(m.name)}</b><small>${extra}</small></div>
+ <button class="ic" title="Hear it" data-snd="${esc(m.name)}" data-sci="${esc(m.sci||'')}">🔊</button><button class="ic" title="Add to yard" data-add="${esc(m.name)}">＋</button></div>`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-snd],[data-add]');if(!b)return;
+ if(b.dataset.snd){tab('sounds');$('#sQ').value=b.dataset.snd;playSounds(b.dataset.snd,b.dataset.sci)}
+ else{tab('yard');$('#yName').value=b.dataset.add;$('#yName').scrollIntoView({block:'center'})}});
+
+/* ---------- TODAY: expected ---------- */
+$('#expGo').onclick=async()=>{if(needLoc())return;const out=$('#exp');out.innerHTML='<p><span class="spin"></span><span id="eprog">Starting…</span></p>';
+ try{const{list,region}=await expected(t=>{const p=$('#eprog');if(p)p.textContent=t});
+  const yr=yardYear(new Date().getFullYear());
+  const arriving=list.filter(m=>m.fNext>=0.34&&m.fNext-m.fNow>=0.2).sort((a,b)=>b.fNext-a.fNext);
+  const now=list.filter(m=>m.fNow>=0.15||m.recent).sort((a,b)=>(b.recent?1:0)-(a.recent?1:0)||b.fNow-a.fNow);
+  const leaving=list.filter(m=>m.fNow>=0.34&&m.fNow-m.fNext>=0.25);
+  const tags=m=>(m.recent?`<span class="tag s">seen nearby ${esc(m.recent.obsDt.slice(5,10))}</span>`:'')+(yr.has(m.name)?'<span class="tag">in yard this year</span>':'<span class="tag g">not in yard yet</span>')+(m.fNow?` ${Math.round(m.fNow*100)}% of days`:'');
+  out.innerHTML=`<p class="muted">County: ${esc(region)} · ${list.length} species</p>`+
+   (arriving.length?`<h3>Arriving in the next 2 weeks</h3>`+arriving.slice(0,15).map(m=>spRow(m,`now ${Math.round(m.fNow*100)}% → soon ${Math.round(m.fNext*100)}% of days`)).join(''):'')+
+   `<h3>Around now</h3>`+now.slice(0,60).map(m=>spRow(m,tags(m))).join('')+
+   (leaving.length?`<h3>Leaving soon: last chances</h3>`+leaving.slice(0,12).map(m=>spRow(m,`now ${Math.round(m.fNow*100)}% → soon ${Math.round(m.fNext*100)}%`)).join(''):'');
+  store.set('wc.lastExp',{t:Date.now(),list:list.map(m=>({name:m.name,sci:m.sci,fNow:m.fNow,recent:!!m.recent}))});
+ }catch(e){out.innerHTML=keyNote(e)}};
+
+/* ---------- RARE ---------- */
+function km(a,b,c,d){const R=6371,r=x=>x*Math.PI/180;const x=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+$('#rareGo').onclick=async()=>{if(needLoc())return;const out=$('#rare');out.innerHTML=spin('Checking rare bird reports…');
+ try{const d=await eb(`data/obs/geo/recent/notable?lat=${cfg.lat}&lng=${cfg.lng}&dist=50&back=7&detail=full`);
+  const G={};for(const o of d){const k=o.speciesCode+'|'+o.locId;const g=G[k]||(G[k]={o,n:0,subs:new Set(),latest:o.obsDt,valid:false});g.n++;g.subs.add(o.subId);if(o.obsDt>g.latest){g.latest=o.obsDt;g.o=o}if(o.obsValid)g.valid=true}
+  const now=Date.now();
+  const rows=Object.values(G).map(g=>{const dist=km(cfg.lat,cfg.lng,g.o.lat,g.o.lng);const hrs=(now-new Date(g.latest.replace(' ','T')))/36e5;
+   let p=Math.max(5,Math.min(95,Math.round(90*Math.exp(-hrs/40)+Math.min(25,(g.subs.size-1)*8)+(g.valid?5:0))));
+   return{...g,dist,hrs,p,mins:Math.round(dist*1.35/65*60)+5}}).sort((a,b)=>(b.p-b.mins/3)-(a.p-a.mins/3));
+  learn(rows.map(r=>[r.o.comName,r.o.sciName]));
+  out.innerHTML=rows.length?rows.map(r=>`<div class="card"><div class="sp" style="border:0;padding:0"><div class="nm"><b>${esc(r.o.comName)}</b><small>${esc(r.o.locName)}</small></div><button class="ic" data-snd="${esc(r.o.comName)}" data-sci="${esc(r.o.sciName)}">🔊</button></div>
+   <div class="row" style="margin-top:4px"><span class="tag ${r.p>=60?'':'r'}">${r.p}% still there</span><span class="tag s">~${r.mins} min drive</span><span class="tag g">${r.subs.size} report${r.subs.size>1?'s':''}</span>${r.valid?'<span class="tag">reviewed</span>':''}</div>
+   <div class="muted">Last seen ${esc(r.latest)} (${Math.round(r.hrs)} h ago)${r.o.howMany?' · '+r.o.howMany+' bird(s)':''}</div>
+   <div class="links"><a href="https://www.google.com/maps/dir/?api=1&destination=${r.o.lat},${r.o.lng}" target="_blank" rel="noopener">Directions ↗</a><a href="https://ebird.org/checklist/${esc(r.o.subId)}" target="_blank" rel="noopener">Latest checklist ↗</a></div></div>`).join('')
+   :'<div class="card">No rare birds reported within 50 km in the last week.</div>';
+ }catch(e){out.innerHTML=keyNote(e)}};
+
+/* ---------- YARD ---------- */
+const log=()=>store.get('wc.yard',[]);
+const yardYear=y=>new Set(log().filter(r=>r.date.startsWith(y+'')).map(r=>r.name));
+$('#yDate').value=ymd(new Date());
+$('#yAdd').onclick=()=>{const name=$('#yName').value.trim();if(!name){$('#yName').focus();return}
+ const L=log();L.unshift({name,date:$('#yDate').value||ymd(new Date()),count:+$('#yCount').value||1,note:$('#yNote').value.trim()});store.set('wc.yard',L);
+ $('#yName').value='';$('#yNote').value='';$('#yCount').value=1;renderYard()};
+function renderYard(){
+ const L=log(),Y=new Date().getFullYear();$('#yrTitle').textContent=Y+' in the yard';
+ const yr=L.filter(r=>r.date.startsWith(Y+''));const first={},last={};
+ for(const r of yr){if(!first[r.name]||r.date<first[r.name])first[r.name]=r.date;if(!last[r.name]||r.date>last[r.name])last[r.name]=r.date}
+ const sp=Object.keys(first).sort((a,b)=>first[a]<first[b]?-1:1);
+ $('#yStats').innerHTML=`<div class="big">${sp.length} <span class="muted">species · ${yr.length} sightings</span></div>`;
+ $('#ySum').innerHTML=sp.length?'<table><tr><th>Bird</th><th>First</th><th>Last</th></tr>'+sp.map(n=>`<tr><td>${esc(n)}</td><td>${first[n].slice(5)}</td><td>${last[n].slice(5)}</td></tr>`).join('')+'</table>':'<p class="muted">No sightings logged this year yet.</p>';
+ // first-of-year by year
+ const F={};for(const r of L){const y=r.date.slice(0,4),md=r.date.slice(5);F[r.name]=F[r.name]||{};if(!F[r.name][y]||md<F[r.name][y])F[r.name][y]=md}
+ const years=[...new Set(L.map(r=>r.date.slice(0,4)))].sort().slice(-5);
+ $('#yFoy').innerHTML=years.length?'<table><tr><th>Bird</th>'+years.map(y=>`<th>${y}</th>`).join('')+'</tr>'+Object.keys(F).sort().map(n=>'<tr><td>'+esc(n)+'</td>'+years.map((y,i)=>{const v=F[n][y],p=i?F[n][years[i-1]]:null;
+  return `<td style="color:${v&&p?(v<p?'var(--green)':v>p?'var(--rust)':'inherit'):'inherit'}">${v||'·'}</td>`}).join('')+'</tr>').join('')+'</table>':'<p class="muted">Arrival comparisons appear once you log sightings.</p>';
+ $('#yLog').innerHTML=L.slice(0,25).map((r,i)=>`<div class="sp"><div class="nm"><b>${esc(r.name)}</b><small>${esc(r.date)} · ${r.count}${r.note?' · '+esc(r.note):''}</small></div><button class="x" data-del="${i}" aria-label="Delete">×</button></div>`).join('')||'<p class="muted">Nothing yet.</p>';
+ document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const L=log();L.splice(+b.dataset.del,1);store.set('wc.yard',L);renderYard()});
+ const recentNames=[...new Set(L.map(r=>r.name))].slice(0,12);
+ $('#yQuick').innerHTML=recentNames.length?'<label>Quick add (today)</label>'+recentNames.map(n=>`<button data-q="${esc(n)}">${esc(n)}</button>`).join(''):'';
+ document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const L=log();L.unshift({name:b.dataset.q,date:ymd(new Date()),count:1,note:''});store.set('wc.yard',L);renderYard()});
+}
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+$('#yCsv').onclick=()=>dl('yard-ledger.csv','date,bird,count,note\n'+log().map(r=>[r.date,r.name,r.count,r.note].map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n'),'text/csv');
+$('#yBak').onclick=()=>dl('wingcast-backup.json',JSON.stringify({yard:log(),cfg:{...cfg,key:''}}),'application/json');
+$('#yRes').onclick=()=>$('#yFile').click();
+$('#yFile').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(Array.isArray(d.yard)){store.set('wc.yard',d.yard);renderYard()}}catch(err){alert('Not a valid backup file')}};
+$('#yPrint').onclick=()=>{const Y=new Date().getFullYear(),L=log().filter(r=>r.date.startsWith(Y+''));const first={},cnt={};
+ for(const r of L){if(!first[r.name]||r.date<first[r.name])first[r.name]=r.date;cnt[r.name]=(cnt[r.name]||0)+1}
+ const sp=Object.keys(first).sort((a,b)=>first[a]<first[b]?-1:1);
+ const months={};for(const n of sp){const m=new Date(first[n]+'T12:00').toLocaleString('en',{month:'long'});(months[m]=months[m]||[]).push(n)}
+ $('#printBook').innerHTML=`<h1 style="text-align:center">${Y} — A Year of Birds in the Yard</h1><p style="text-align:center">${esc(cfg.place||'')}<br>${sp.length} species · ${L.length} sightings</p>`+
+  Object.entries(months).map(([m,ns])=>`<h2>${m}</h2><p>${ns.map(n=>`<b>${esc(n)}</b> (first ${first[n].slice(5)}, seen ${cnt[n]}×)`).join(' · ')}</p>`).join('');
+ window.print()};
+
+/* ---------- FEEDER ---------- */
+const FOOD={sun:['Black-oil sunflower','tube or hopper feeder'],saf:['Safflower','hopper; squirrels and grackles mostly skip it'],nyjer:['Nyjer (thistle)','finch sock or tube with small ports'],
+ suet:['Suet','suet cage, ideally a tail-prop feeder'],peanut:['Shelled peanuts','mesh peanut feeder'],meal:['Mealworms','shallow dish, dried or live'],
+ millet:['White millet / ground mix','scattered on the ground or a platform'],nectar:['Nectar (1 part sugar : 4 water, no dye)','hummingbird feeder, changed every few days (Apr–Sep)'],
+ fruit:['Orange halves / grape jelly','oriole feeder (late Apr–Aug)'],water:['Water','shallow bird bath; heated in winter'],berry:['Berries & native shrubs','winterberry, serviceberry, dogwood']};
+const FEED={'Black-capped Chickadee':['sun','suet','peanut','meal'],'Tufted Titmouse':['sun','peanut','suet'],'White-breasted Nuthatch':['sun','suet','peanut'],'Red-breasted Nuthatch':['sun','suet','peanut'],
+ 'Downy Woodpecker':['suet','peanut','sun'],'Hairy Woodpecker':['suet','peanut'],'Red-bellied Woodpecker':['suet','peanut','fruit'],'Northern Flicker':['suet','meal'],'Pileated Woodpecker':['suet'],'Yellow-bellied Sapsucker':['suet','fruit'],
+ 'Northern Cardinal':['saf','sun','millet'],'Blue Jay':['peanut','sun'],'American Goldfinch':['nyjer','sun'],'House Finch':['sun','nyjer','saf'],'Purple Finch':['sun','nyjer'],'Pine Siskin':['nyjer','sun'],
+ 'Common Redpoll':['nyjer','sun'],'Evening Grosbeak':['sun','saf'],'Rose-breasted Grosbeak':['sun','saf'],'Dark-eyed Junco':['millet','sun'],'White-throated Sparrow':['millet','sun'],'Song Sparrow':['millet'],
+ 'Chipping Sparrow':['millet','sun'],'American Tree Sparrow':['millet'],'Fox Sparrow':['millet'],'White-crowned Sparrow':['millet'],'Eastern Towhee':['millet','sun'],'Mourning Dove':['millet','sun','saf'],
+ 'Carolina Wren':['suet','meal','peanut'],'Eastern Bluebird':['meal','berry','water'],'American Robin':['berry','meal','water'],'Gray Catbird':['fruit','meal','berry'],'Northern Mockingbird':['berry','fruit','suet'],
+ 'Cedar Waxwing':['berry','water'],'Baltimore Oriole':['fruit','nectar'],'Ruby-throated Hummingbird':['nectar'],'Red-winged Blackbird':['millet','sun'],'Pine Warbler':['suet'],'Yellow-rumped Warbler':['suet','berry'],
+ 'Brown Creeper':['suet'],'Hermit Thrush':['meal','berry','water'],'Wood Thrush':['berry','water'],'Scarlet Tanager':['fruit','berry'],'Indigo Bunting':['nyjer','sun'],'Wild Turkey':['millet']};
+fillList();
+$('#fdGo').onclick=async()=>{if(needLoc())return;const out=$('#fd');out.innerHTML=spin('Comparing what\'s around with your yard…');
+ try{let list;const c=store.get('wc.lastExp',null);
+  if(c&&Date.now()-c.t<6*36e5)list=c.list;else{const r=await expected(t=>{out.innerHTML=spin(t)});list=r.list}
+  const cut=ymd(new Date(Date.now()-30*864e5));const yard=new Set(log().filter(r=>r.date>=cut).map(r=>r.name));
+  const m=new Date().getMonth()+1;const season=k=>!(k==='nectar'&&(m<4||m>9))&&!(k==='fruit'&&(m<4||m>8));
+  const around=list.filter(x=>FEED[x.name]&&(x.fNow>=0.2||x.recent));
+  const missing=around.filter(x=>!yard.has(x.name));
+  const byFood={};for(const x of missing)for(const f of FEED[x.name])if(season(f))(byFood[f]=byFood[f]||[]).push(x);
+  const ranked=Object.entries(byFood).sort((a,b)=>b[1].length-a[1].length);
+  out.innerHTML=`<div class="card"><p><b>${around.length}</b> feeder birds are around your area now. <b>${around.length-missing.length}</b> have been in your yard in the last 30 days.</p>`+
+   (ranked.length?'<h3>What to add, best first</h3>'+ranked.slice(0,6).map(([f,xs])=>`<div class="food"><b>${esc(FOOD[f][0])}</b> <span class="muted">(${esc(FOOD[f][1])})</span><br>Could bring in: ${xs.map(x=>esc(x.name)).join(', ')}</div>`).join('')
+    :'<p>Your yard already has every common feeder bird that\'s around now. Nice work.</p>')+
+   '<p class="muted">Tip: log yard sightings regularly, because this plan only knows what you\'ve logged. Water draws birds that never touch seed.</p></div>';
+ }catch(e){out.innerHTML=keyNote(e)}};
+
+/* ---------- SOUNDS ---------- */
+async function playSounds(name,sci){
+ const out=$('#snd');out.innerHTML=spin('Finding recordings…');sci=sci||SCI[name]||'';
+ const q=sci?`"${sci}" filetype:audio`:`"${name}" filetype:audio`;
+ try{const d=await J('https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=12&prop=videoinfo&viprop=url|derivatives&format=json&origin=*&gsrsearch='+encodeURIComponent(q));
+  const pages=Object.values(d.query?.pages||{}).sort((a,b)=>a.index-b.index);
+  const recs=pages.map(p=>{const v=p.videoinfo?.[0]||{};const mp3=(v.derivatives||[]).find(x=>/mpeg|mp3/.test(x.type||''));
+   const t=p.title.replace(/^File:/,'').replace(/\.(ogg|oga|mp3|wav|flac|opus|webm)$/i,'').replace(/_/g,' ');
+   const kind=/song|sing/i.test(t)?'song':/call|alarm|chip/i.test(t)?'call':/drum/i.test(t)?'drumming':'';
+   return{t,src:mp3?mp3.src:v.url,page:v.descriptionurl,kind}}).filter(r=>r.src);
+  const enc=encodeURIComponent,aab=name.replace(/[' ]/g,m=>m===' '?'_':'');
+  const more=`<div class="links"><a href="https://www.allaboutbirds.org/guide/${enc(aab)}/sounds" target="_blank" rel="noopener">All About Birds: typical songs ↗</a><a href="https://xeno-canto.org/explore?query=${enc(sci||name)}" target="_blank" rel="noopener">xeno-canto ↗</a><a href="https://search.macaulaylibrary.org/catalog?q=${enc(name)}&mediaType=audio" target="_blank" rel="noopener">Macaulay Library ↗</a></div>`;
+  out.innerHTML=`<div class="card"><h2>${esc(name)}</h2>${sci?`<div class="muted"><i>${esc(sci)}</i></div>`:''}`+
+   (recs.length?recs.map(r=>`<div class="rec">${r.kind?`<span class="tag ${r.kind==='song'?'':'s'}">${r.kind}</span>`:''}<span class="muted">${esc(r.t)}</span><audio controls preload="none" src="${esc(r.src)}"></audio></div>`).join('')
+    :'<p class="muted">No free recordings found under that name. Try the links below.</p>')+
+   '<h3>More recordings &amp; how to tell songs from calls</h3>'+more+'</div>';
+  const hist=store.get('wc.sndHist',[]).filter(n=>n!==name);hist.unshift(name);store.set('wc.sndHist',hist.slice(0,10));quickSounds();
+ }catch(e){out.innerHTML='<div class="card">Recording search failed. Try again in a moment.</div>'}}
+function quickSounds(){const h=store.get('wc.sndHist',[]);const base=h.length?h:['Black-capped Chickadee','Northern Cardinal','Wood Thrush','Carolina Wren','Baltimore Oriole','Barred Owl'];
+ $('#sQuick').innerHTML='<label>'+(h.length?'Recent':'Try')+'</label>'+base.map(n=>`<button data-sq="${esc(n)}">${esc(n)}</button>`).join('');
+ document.querySelectorAll('[data-sq]').forEach(b=>b.onclick=()=>{$('#sQ').value=b.dataset.sq;playSounds(b.dataset.sq)})}
+$('#sGo').onclick=()=>{const n=$('#sQ').value.trim();if(n)playSounds(n)};
+quickSounds();
+
+/* ---------- PAST: then & now ---------- */
+$('#pGo').onclick=async()=>{if(needLoc())return;const out=$('#past');out.innerHTML=spin('Reading 150 years of records…');
+ const R=Math.max(10,Math.min(200,+$('#pR').value||60));
+ const parse=n=>{const w=n.replace(/[()]/g,' ').split(/\s+/).filter(Boolean);const g=w[0]||'';const ep=[];for(let i=1;i<w.length&&/^[a-z][a-z-]+$/.test(w[i]);i++)ep.push(w[i]);return{g,s:ep[0]||'',t:ep[1]||''}};
+ const facet=async yr=>{const d=await J(`https://api.gbif.org/v1/occurrence/search?geoDistance=${cfg.lat},${cfg.lng},${R}km&classKey=212&year=${yr}&facet=scientificName&facetLimit=1500&limit=0`);
+  const bin={},ep={},gen={};let t=0;
+  for(const c of d.facets?.[0]?.counts||[]){const x=parse(c.name);t+=c.count;
+   if(!x.s){gen[x.g]=(gen[x.g]||0)+c.count;continue}
+   const k=x.g+' '+x.s;const B=bin[k]||(bin[k]={g:x.g,s:x.s,alt:new Set(),c:0});B.c+=c.count;if(x.t)B.alt.add(x.t);
+   for(const e of[x.s,x.t])if(e){const k2=stem(e);ep[k2]=(ep[k2]||0)+c.count}}
+  return{bin,ep,gen,t,total:d.count}};
+ const stem=e=>e.replace(/(us|um|a|is|e|i)$/,"");
+ const GALIAS={Accipiter:['Astur'],Astur:['Accipiter']};
+ const matchCount=(B,o)=>Math.max(o.bin[B.g+' '+B.s]?.c||0,o.ep[stem(B.s)]||0,...[...B.alt].map(e=>o.ep[stem(e)]||0),...(GALIAS[B.g]||[]).map(g=>o.gen[g]||0));
+ try{const[old,now]=await Promise.all([facet('1870,1939'),facet('2015,2026')]);
+  if(old.t<50){out.innerHTML='<div class="card">Too few old records in this radius. Try a bigger radius (100–150 km).</div>';return}
+  const gone=Object.entries(old.bin).filter(([k,B])=>B.c>=5&&matchCount(B,now)/now.t<(B.c/old.t)/15).sort((a,b)=>b[1].c-a[1].c).slice(0,25);
+  const newc=Object.entries(now.bin).filter(([k,B])=>!matchCount(B,old)&&B.c/now.t>0.0004).sort((a,b)=>b[1].c-a[1].c).slice(0,25);
+  const names={};
+  await pool([...gone,...newc].map(x=>x[0]),6,async k=>{const m=await J('https://api.gbif.org/v1/species/match?name='+encodeURIComponent(k));let v='';
+   if(m.usageKey){try{const s=await J('https://api.gbif.org/v1/species/'+m.usageKey);v=s.vernacularName||''}catch(e){}
+    if(!v){try{const vn=await J(`https://api.gbif.org/v1/species/${m.usageKey}/vernacularNames?limit=60`);v=(vn.results||[]).find(x=>x.language==='eng')?.vernacularName||''}catch(e){}}}
+   names[k]={name:v?v.toLowerCase().replace(/(^|[\s-])\w/g,c=>c.toUpperCase()):k,sci:k}});
+  learn(Object.values(names).filter(n=>n.name!==n.sci).map(n=>[n.name,n.sci]));
+  const row=(k,txt)=>spRow({name:names[k]?.name||k,sci:k},txt);
+  out.innerHTML=`<div class="card"><p class="muted">${old.total.toLocaleString()} records from 1870–1939 vs ${now.total.toLocaleString()} since 2015, within ${R} km.</p>
+   <h3>Then, but rare or gone now</h3>${gone.length?gone.map(([k,B])=>row(k,`${B.c} old records · now ${matchCount(B,now).toLocaleString()} records`)).join(''):'<p class="muted">None stood out.</p>'}
+   <h3>Newcomers since then</h3>${newc.length?newc.map(([k,B])=>row(k,`0 old records · now ${B.c.toLocaleString()} records`)).join(''):'<p class="muted">None stood out.</p>'}
+   <p class="muted">Caution: old records are mostly museum specimens and egg collections. Collectors' favorites are over-counted, some specimens have the wrong location, and scientists have renamed many birds since then. Treat this as a conversation starter, not a census.</p></div>`;
+ }catch(e){out.innerHTML='<div class="card">Historical lookup failed. Try again in a moment.</div>'}};
+
+/* ---------- SETUP ---------- */
+function setPlace(lat,lng,name){cfg.lat=+(+lat).toFixed(4);cfg.lng=+(+lng).toFixed(4);cfg.place=name;cfg.region=null;saveCfg();$('#placeLbl').textContent=name;loadForecast();tab('today')}
+$('#geo').onclick=()=>{if(!navigator.geolocation){alert('Location not available. Search a town instead.');return}
+ navigator.geolocation.getCurrentPosition(p=>setPlace(p.coords.latitude,p.coords.longitude,'My location'),()=>alert('Location was blocked. Search a town instead.'),{timeout:15000})};
+$('#townGo').onclick=async()=>{const q=$('#town').value.trim().replace(/,.*$/,'');if(!q)return;$('#townRes').innerHTML='<span class="spin"></span>';
+ try{const d=await J('https://geocoding-api.open-meteo.com/v1/search?count=8&language=en&name='+encodeURIComponent(q));
+  $('#townRes').innerHTML=(d.results||[]).map((r,i)=>`<button class="btn alt" style="width:100%;margin-top:6px;text-align:left" data-g="${i}">${esc(r.name)}, ${esc(r.admin1||'')} ${esc(r.country_code||'')}</button>`).join('')||'<p class="muted">No match.</p>';
+  document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{const r=d.results[+b.dataset.g];setPlace(r.latitude,r.longitude,`${r.name}, ${r.admin1||''}`)});
+ }catch(e){$('#townRes').innerHTML='<p class="muted">Search failed.</p>'}};
+$('#rad').value=cfg.radius||25;$('#rad').onchange=()=>{cfg.radius=Math.max(1,Math.min(50,+$('#rad').value||25));saveCfg()};
+$('#key').value=cfg.key||'';
+$('#keySave').onclick=async()=>{cfg.key=$('#key').value.trim();saveCfg();$('#keyMsg').innerHTML='<span class="spin"></span>Testing…';
+ try{await eb('ref/region/list/subnational1/US');$('#keyMsg').textContent='✓ Key works.'}catch(e){$('#keyMsg').textContent=e.message==='NOKEY'?'Paste a key first.':e.message}};
+
+/* ---------- start ---------- */
+if(cfg.place)$('#placeLbl').textContent=cfg.place;
+try{const h=location.hash.slice(1);if(TABS.includes(h))tab(h)}catch(e){}
+loadForecast();
+</script>
+</body></html>
