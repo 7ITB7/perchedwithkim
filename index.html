@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#120f24">
-<link rel="icon" href="data:,"><title>Kimfisher</title>
+<link rel="icon" href="data:,"><title>Perched with Kim</title>
 <style>
-/* KIMFISHER: "night aviary" style. Deep plum-navy sky, glowing jewel accents (coral, teal, violet, sunshine), soft-glass rounded cards, chunky rounded type */
+/* PERCHED WITH KIM: "night aviary" style. Deep plum-navy sky, glowing jewel accents (coral, teal, violet, sunshine), soft-glass rounded cards, chunky rounded type */
 :root{--bg:#120f24;--card:#1e1a38;--card2:#26214a;--ink:#f1edff;--ink2:#a9a2cf;--line:#3a3366;--green:#2dd4bf;--rust:#ff6b6b;--sky:#60a5fa;--gold:#fbbf24;--violet:#a78bfa;--pink:#f472b6}
 *{box-sizing:border-box}[hidden]{display:none!important}
 html{color-scheme:dark}
@@ -76,7 +76,7 @@ details.sec p{margin:6px 0;font-size:14px}
 @media print{html{color-scheme:light}body{background:#fff;color:#000}body *{visibility:hidden}#printBook,#printBook *{visibility:visible}#printBook{display:block;position:absolute;left:0;top:0;width:100%;padding:20px;font-family:Georgia,serif;color:#000}}
 </style></head><body>
 <div class="banner" id="banner" hidden>Preview mode: live lookups may be blocked here. Everything works once it's on GitHub Pages.</div>
-<header><div><h1>Kimfisher</h1><small id="placeLbl">Kim's birding companion · set location in ⚙</small></div><button id="gear" aria-label="Setup">⚙</button></header>
+<header><div><h1>Perched with Kim</h1><small id="placeLbl">Kim's birding companion · set location in ⚙</small></div><button id="gear" aria-label="Setup">⚙</button></header>
 <main>
 
 <!-- TODAY -->
@@ -363,7 +363,7 @@ function renderYard(){
 }
 function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 $('#yCsv').onclick=()=>dl('yard-ledger.csv','date,bird,count,note\n'+log().map(r=>[r.date,r.name,r.count,r.note].map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n'),'text/csv');
-$('#yBak').onclick=()=>dl('kimfisher-backup.json',JSON.stringify({yard:log(),cfg:{...cfg,key:''}}),'application/json');
+$('#yBak').onclick=()=>dl('perched-with-kim-backup.json',JSON.stringify({yard:log(),cfg:{...cfg,key:''}}),'application/json');
 $('#yRes').onclick=()=>$('#yFile').click();
 $('#yFile').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(Array.isArray(d.yard)){store.set('wc.yard',d.yard);renderYard()}}catch(err){alert('Not a valid backup file')}};
 $('#yPrint').onclick=()=>{const Y=new Date().getFullYear(),L=log().filter(r=>r.date.startsWith(Y+''));const first={},cnt={};
